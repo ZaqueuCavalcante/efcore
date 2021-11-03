@@ -1,4 +1,4 @@
-// Licensed to the .NET Foundation under one or more agreements.
+﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using Microsoft.EntityFrameworkCore.Infrastructure;
@@ -9,7 +9,7 @@ namespace Microsoft.EntityFrameworkCore.Query
 {
     /// <summary>
     ///     <para>
-    ///         Service dependencies parameter class for <see cref="RelationalQueryableMethodTranslatingExpressionVisitor" />
+    ///         Service dependencies parameter class for <see cref="RelationalSharedTypeEntityExpansionHelper" />
     ///     </para>
     ///     <para>
     ///         This type is typically used by database providers (and other extensions). It is generally
@@ -30,7 +30,7 @@ namespace Microsoft.EntityFrameworkCore.Query
     ///         The implementation does not need to be thread-safe.
     ///     </para>
     /// </summary>
-    public sealed record RelationalQueryableMethodTranslatingExpressionVisitorDependencies
+    public sealed record RelationalSharedTypeEntityExpansionHelperDependencies
     {
         /// <summary>
         ///     <para>
@@ -52,33 +52,16 @@ namespace Microsoft.EntityFrameworkCore.Query
         ///     </para>
         /// </summary>
         [EntityFrameworkInternal]
-        public RelationalQueryableMethodTranslatingExpressionVisitorDependencies(
-            IRelationalSqlTranslatingExpressionVisitorFactory relationalSqlTranslatingExpressionVisitorFactory,
-            ISqlExpressionFactory sqlExpressionFactory,
-            IRelationalSharedTypeEntityExpansionHelper relationalSharedTypeEntityExpansionHelper)
+        public RelationalSharedTypeEntityExpansionHelperDependencies(ISqlExpressionFactory sqlExpressionFactory)
         {
-            Check.NotNull(relationalSqlTranslatingExpressionVisitorFactory, nameof(relationalSqlTranslatingExpressionVisitorFactory));
             Check.NotNull(sqlExpressionFactory, nameof(sqlExpressionFactory));
-            Check.NotNull(relationalSharedTypeEntityExpansionHelper, nameof(relationalSharedTypeEntityExpansionHelper));
 
-            RelationalSqlTranslatingExpressionVisitorFactory = relationalSqlTranslatingExpressionVisitorFactory;
             SqlExpressionFactory = sqlExpressionFactory;
-            RelationalSharedTypeEntityExpansionHelper = relationalSharedTypeEntityExpansionHelper;
         }
-
-        /// <summary>
-        ///     The SQL-translating expression visitor factory.
-        /// </summary>
-        public IRelationalSqlTranslatingExpressionVisitorFactory RelationalSqlTranslatingExpressionVisitorFactory { get; init; }
 
         /// <summary>
         ///     The SQL expression factory.
         /// </summary>
         public ISqlExpressionFactory SqlExpressionFactory { get; init; }
-
-        /// <summary>
-        ///     Shared type entity expansion helper.
-        /// </summary>
-        public IRelationalSharedTypeEntityExpansionHelper RelationalSharedTypeEntityExpansionHelper { get; init; }
     }
 }
