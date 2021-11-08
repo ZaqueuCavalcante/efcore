@@ -32,7 +32,10 @@ namespace Microsoft.EntityFrameworkCore.Storage
                 new RelationalSqlGenerationHelper(
                     new RelationalSqlGenerationHelperDependencies()),
                 new ParameterNameGeneratorFactory(
-                    new ParameterNameGeneratorDependencies()));
+                    new ParameterNameGeneratorDependencies()),
+                new TestRelationalTypeMappingSource(
+                    TestServiceFactory.Instance.Create<TypeMappingSourceDependencies>(),
+                    TestServiceFactory.Instance.Create<RelationalTypeMappingSourceDependencies>()));
         }
 
         [ConditionalFact]

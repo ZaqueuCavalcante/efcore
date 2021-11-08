@@ -169,6 +169,16 @@ namespace Microsoft.EntityFrameworkCore.Query
             Assert.Equal(RelationalStrings.DistinctOnCollectionNotSupported, message);
         }
 
+        [ConditionalTheory]
+        [MemberData(nameof(IsAsyncData))]
+        public virtual Task Parameter_used_multiple_times_take_appropriate_inferred_type_mapping(bool async)
+        {
+            var place = "Seattle";
+            return AssertQuery(
+                async,
+                ss => ss.Set<City>().Where(e => e.Nation == place || e.Location == place));
+        }
+
         protected virtual bool CanExecuteQueryString
             => false;
 

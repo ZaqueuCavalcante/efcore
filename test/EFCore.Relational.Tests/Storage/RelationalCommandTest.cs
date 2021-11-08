@@ -550,6 +550,7 @@ namespace Microsoft.EntityFrameworkCore.Storage
 
         [ConditionalTheory]
         [MemberData(nameof(CommandActions))]
+        [Obsolete]
         public async Task Configures_DbCommand_with_dynamic_parameters(
             Delegate commandDelegate,
 #pragma warning disable xUnit1026 // Theory methods should use all of their parameters

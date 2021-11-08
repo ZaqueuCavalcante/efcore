@@ -9138,6 +9138,19 @@ namespace Microsoft.EntityFrameworkCore.Query
                 ss => ss.Set<Mission>().Where(m => m.Rating.Equals(null)));
         }
 
+        [ConditionalTheory]
+        [MemberData(nameof(IsAsyncData))]
+        public virtual Task Enum_matching_take_value_gets_different_type_mapping(bool async)
+        {
+            var value = MilitaryRank.Private;
+            return AssertQueryScalar(
+                async,
+                ss => ss.Set<Gear>()
+                        .OrderBy(g => g.Nickname)
+                        .Take(1)
+                        .Select(g => g.Rank & value));
+        }
+
         protected GearsOfWarContext CreateContext()
             => Fixture.CreateContext();
 

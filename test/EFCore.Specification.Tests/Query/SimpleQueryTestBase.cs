@@ -392,5 +392,65 @@ namespace Microsoft.EntityFrameworkCore
             public Author26433 Author { get; set; }
         }
 
+        [ConditionalTheory]
+        [MemberData(nameof(IsAsyncData))]
+        public virtual async Task Enum_with_value_converter_matching_take_value(bool async)
+        {
+            var contextFactory = await InitializeAsync<Context26472>();
+            using var context = contextFactory.CreateContext();
+            var orderItemType = OrderItemType.MyType1;
+            var query = context.Orders.Where(x => x.Items.Any()).OrderBy(e => e.Id).Take(1)
+                .Select(e => e.Id)
+                .Join(context.Orders, o => o, i => i.Id, (o, i) => i)
+                .Select(entity => new
+                {
+                    Id = entity.Id,
+                    SpecialSum = entity.Items.Where(x => x.Type == orderItemType)
+                        .Select(x => x.Price)
+                        .FirstOrDefault()
+                });
+
+            var result = async
+                ? await query.ToListAsync()
+                : query.ToList();
+        }
+
+        protected class Context26472 : DbContext
+        {
+            public Context26472(DbContextOptions options)
+                   : base(options)
+            {
+            }
+
+            public virtual DbSet<Order> Orders { get; set; }
+            public virtual DbSet<OrderItem> OrderItems { get; set; }
+
+            protected override void OnModelCreating(ModelBuilder modelBuilder)
+            {
+                modelBuilder.Entity<OrderItem>().Property(x => x.Type).HasConversion<string>();
+            }
+        }
+
+        protected class Order
+        {
+            public int Id { get; set; }
+
+            public virtual ICollection<OrderItem> Items { get; set; }
+        }
+
+        protected class OrderItem
+        {
+            public int Id { get; set; }
+            public int OrderId { get; set; }
+            public OrderItemType Type { get; set; }
+            public double Price { get; set; }
+        }
+
+        protected enum OrderItemType
+        {
+            Undefined = 0,
+            MyType1 = 1,
+            MyType2 = 2
+        }
     }
 }
